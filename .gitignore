@@ -1,3 +1,7 @@
+.idea
+target
+docker/temp
+*.iml
 # Compiled class file
 *.class
 
