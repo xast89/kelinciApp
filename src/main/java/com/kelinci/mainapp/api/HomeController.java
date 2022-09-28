@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+//wymiany JSON po HTTP
 public class HomeController {
 
     private User zapisanyUser;
@@ -14,7 +15,7 @@ public class HomeController {
     @GetMapping(value = "/users")
     //czeka na wywolanie localhost:8080/users
     public User users() {
-        return new User("Pawel", "Krzak");
+        return zapisanyUser;
     }
 
     @PostMapping(value = "/user/add")
@@ -25,10 +26,12 @@ public class HomeController {
         // z tymi wysłanymi przez klienta wartościami
 
         final String wartoscNameZRequestu = userSendByOurAppClient.getName();
+        final String wartoscSurnameZRequestu = userSendByOurAppClient.getSurname();
+
         final int wartoscAgeZRequestu = userSendByOurAppClient.getAge();
         final boolean wartoscRegisteredZRequestu = userSendByOurAppClient.isRegistered();
 
-        final User user = new User(wartoscNameZRequestu, "tutajPOwinienNBycSurnameZRequesty");
+        final User user = new User(wartoscNameZRequestu, wartoscSurnameZRequestu);
 
         zapisanyUser = user;
 
