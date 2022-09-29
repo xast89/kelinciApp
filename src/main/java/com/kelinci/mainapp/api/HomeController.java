@@ -14,7 +14,7 @@ public class HomeController {
 
     @GetMapping(value = "/users")
     //czeka na wywolanie localhost:8080/users
-    public User users() {
+    public User getUsers() {
         return zapisanyUser;
     }
 
@@ -31,7 +31,8 @@ public class HomeController {
         final int wartoscAgeZRequestu = userSendByOurAppClient.getAge();
         final boolean wartoscRegisteredZRequestu = userSendByOurAppClient.isRegistered();
 
-        final User user = new User(wartoscNameZRequestu, wartoscSurnameZRequestu);
+        final User user = new User(wartoscNameZRequestu, wartoscSurnameZRequestu, wartoscAgeZRequestu);
+        //dodac tutaj age z requestu i potem commit
 
         zapisanyUser = user;
 
