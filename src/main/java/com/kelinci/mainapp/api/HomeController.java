@@ -1,7 +1,10 @@
 package com.kelinci.mainapp.api;
 
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 //wymiany JSON po HTTP, to @RestController zamienia klase HomeController and nasłuchiwanie endpointów http
@@ -21,8 +24,6 @@ public class HomeController {
         zapisanyUser = null;
     }
 
-    ;
-
     @PostMapping(value = "/user/add")
     public void addUser(@RequestBody UserRequest userSendByOurAppClient) {
         //dzięki obiektowi, na który wskazuje zmienna referencyjna userSendByOurAppClient mam dostęp do wszystkich wartości, jakie wysłał mi Klient w
@@ -38,9 +39,6 @@ public class HomeController {
 
         final User user = new User(wartoscNameZRequestu, wartoscSurnameZRequestu, wartoscAgeZRequestu);
         //dodac tutaj age z requestu i potem commit
-
         zapisanyUser = user;
-
-
     }
 }
