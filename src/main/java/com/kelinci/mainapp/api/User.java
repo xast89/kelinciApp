@@ -7,6 +7,7 @@ public class User {
     private int age;
 
     public User(String name, String surname, int age) {
+
         this.name = name;
         this.surname = surname;
         this.age = age;
@@ -35,4 +36,5 @@ public class User {
     public void setAge(int age) {
         this.age = age;
     }
+
 }
