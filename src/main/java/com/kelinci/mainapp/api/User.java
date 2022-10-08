@@ -1,6 +1,7 @@
 package com.kelinci.mainapp.api;
 
 public class User {
+    //ta klasa jest dla naszego wewnetrznego uzytku
     private String name;
     private String surname;
     private int age;

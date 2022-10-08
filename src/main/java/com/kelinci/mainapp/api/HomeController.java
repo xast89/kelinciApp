@@ -1,5 +1,6 @@
 package com.kelinci.mainapp.api;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +14,7 @@ public class HomeController {
     private User zapisanyUser;
 
     @GetMapping(value = "/users")
-    //czeka na wywolanie localhost:8080/users
+    //czeka na wywolanie localhost:8080/users, nasłuchuje ne users i wywolu
     public User getUsers() {
         return zapisanyUser;
     }
@@ -24,6 +25,7 @@ public class HomeController {
         // swoim requestem na endpoint localhost:8080/user/add (metoda POST). Jak widzisz, Spring zrobił tutaj magię -> zmapował wysłanego do nas JSON'a
         // na obiekt klasy UserRequest.Jak widzisz, klasa UserRequest jest tylko po to, by odebrać wartośći z requestu i byśmy mogli coś potem zrobić
         // z tymi wysłanymi przez klienta wartościami
+        // json jest modelem komunikacyjnym po to żeby miec komunikacje miedzy np jezykami
 
         final String wartoscNameZRequestu = userSendByOurAppClient.getName();
         final String wartoscSurnameZRequestu = userSendByOurAppClient.getSurname();
@@ -36,6 +38,10 @@ public class HomeController {
 
         zapisanyUser = user;
 
-
     }
+    @DeleteMapping (value = "/user/delete")
+    public void deleteUser(){
+        zapisanyUser = null;
+    }
+
 }

@@ -1,11 +1,13 @@
 package com.kelinci.mainapp.api;
 
 public class UserRequest {
-
+  //to jest widziane na zewnatrz
   private String name;
   private String surname;
   private int age;
   private boolean isRegistered;
+
+  private String mail;
 
   public UserRequest(String name, String surname, int age, boolean isRegistered) {
     this.name = name;
