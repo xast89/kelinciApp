@@ -8,17 +8,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
-    private OurUser zapisanyUser;
+    private OurUser registeredUser;
+    private OurUser confirmedUser;
 
     @GetMapping(value = "/registered/users")
     //czeka na wywolanie localhost:8080/users
     public OurUser getOurUsers() {
-        return zapisanyUser;
+        return registeredUser;
+    }
+
+    @GetMapping(value = "/registered/confirmedusers")
+    //czeka na wywolanie localhost:8080/users
+    public OurUser getConfirmedUsers() {
+        return confirmedUser;
     }
 
     @DeleteMapping(value = "/registered/delete")
     public void deleteOurUser() {
-        zapisanyUser = null;
+        registeredUser = null;
+        confirmedUser = null;
     }
 
     @PostMapping(value = "/registration")
@@ -32,7 +40,23 @@ public class UserController {
 
         //wysylamy tutaj maila
 
-        zapisanyUser = ourUser;
+        registeredUser = ourUser;
+
+    }
+
+    @PostMapping(value = "/registered/confirm")
+    public void confirm(@RequestBody Register confirmation) {
+
+        final OurUser userToBeConfirmed = new OurUser(confirmation.getMail(), confirmation.getMailCode(), false);
+        final OurUser existingUser = new OurUser(registeredUser.getMail(), registeredUser.getMailCode(), registeredUser.isConfirmed());
+        //registeredUser could be hard-coded as false here as double protection, but maybe not necessary
+
+        if (userToBeConfirmed.equals(existingUser)) {
+            //equals method is overriding default equals method from OurUser class
+            existingUser.setConfirmed(true);
+            confirmedUser = existingUser;
+        }
+
 
     }
 
