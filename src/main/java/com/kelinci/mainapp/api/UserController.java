@@ -1,5 +1,6 @@
 package com.kelinci.mainapp.api;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,11 +16,17 @@ public class UserController {
         return zapisanyUser;
     }
 
+    @DeleteMapping(value = "/registered/delete")
+    public void deleteOurUser() {
+        zapisanyUser = null;
+    }
+
     @PostMapping(value = "/registration")
     public void register(@RequestBody Register request) {
-        String mailCode = "123456";
-        //String - tutaj zrobic random od 0 do 99999
-        //final String emailZRequestu = request.getMail();
+
+        Integer random = (int) (1000000 * Math.random());
+        String mailCode = random.toString();
+        System.out.println(mailCode);
 
         final OurUser ourUser = new OurUser(request.getMail(), mailCode, false);
 
