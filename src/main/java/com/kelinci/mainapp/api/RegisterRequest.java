@@ -1,14 +1,14 @@
 package com.kelinci.mainapp.api;
 
-public class Register {
+public class RegisterRequest {
     private String mail;
     private int magicNumber;
-    private String mailCode;
 
-    public Register(String mail, int magicNumber, String mailCode) {
+
+    public RegisterRequest(String mail, int magicNumber, String mailCode) {
         this.mail = mail;
         this.magicNumber = magicNumber;
-        this.mailCode = mailCode;
+
     }
 
     public String getMail() {
@@ -19,7 +19,4 @@ public class Register {
         return magicNumber;
     }
 
-    public String getMailCode() {
-        return mailCode;
-    }
 }
