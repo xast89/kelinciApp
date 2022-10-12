@@ -1,27 +1,22 @@
 package com.kelinci.mainapp.api;
 
-public class Register {
+public class RegisterRequest {
     private String mail;
     private int magicNumber;
 
-    public Register(String mail, int magicNumber) {
+
+    public RegisterRequest(String mail, int magicNumber, String mailCode) {
         this.mail = mail;
         this.magicNumber = magicNumber;
+
     }
 
     public String getMail() {
         return mail;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
     public int getMagicNumber() {
         return magicNumber;
     }
 
-    public void setMagicNumber(int magicNumber) {
-        this.magicNumber = magicNumber;
-    }
 }

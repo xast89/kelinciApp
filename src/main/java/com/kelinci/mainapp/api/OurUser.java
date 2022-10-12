@@ -1,5 +1,7 @@
 package com.kelinci.mainapp.api;
 
+import java.util.Objects;
+
 public class OurUser {
     private String mail;
     private String mailCode;
@@ -33,5 +35,18 @@ public class OurUser {
 
     public void setConfirmed(boolean confirmed) {
         isConfirmed = confirmed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OurUser ourUser = (OurUser) o;
+        return isConfirmed == ourUser.isConfirmed && Objects.equals(mail, ourUser.mail) && Objects.equals(mailCode, ourUser.mailCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mail, mailCode, isConfirmed);
     }
 }
