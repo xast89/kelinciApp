@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/registration")
-    public void register(@RequestBody Register request) {
+    public void register(@RequestBody RegisterRequest request) {
 
         Integer random = (int) (1000000 * Math.random());
         String mailCode = random.toString();
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/registered/confirm")
-    public void confirm(@RequestBody Register confirmation) {
+    public void confirm(@RequestBody ConfirmationRequest confirmation) {
 
         final OurUser userToBeConfirmed = new OurUser(confirmation.getMail(), confirmation.getMailCode(), false);
         final OurUser existingUser = new OurUser(registeredUser.getMail(), registeredUser.getMailCode(), registeredUser.isConfirmed());
