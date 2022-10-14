@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 public class UserController {
@@ -72,13 +73,14 @@ public class UserController {
         final OurUser userToBeConfirmed = new OurUser(confirmation.getMail(), confirmation.getMailCode(), false);
 
         for (OurUser userToBeChecked : listOfRegisteredUsers) {
-            if (userToBeChecked.getMail() == userToBeConfirmed.getMail() && userToBeChecked.getMailCode() == userToBeConfirmed.getMailCode()) {
+            if (Objects.equals(userToBeChecked.getMail(), userToBeConfirmed.getMail()) && Objects.equals(userToBeChecked.getMailCode(), userToBeConfirmed.getMailCode())) {
                 userToBeConfirmed.setConfirmed(true);
+
                 listOfConfirmedUsers.add(userToBeConfirmed);
                 //if logic could probably be also done using overridden equals method from OurUser class
             }
             System.out.println(listOfConfirmedUsers.toString());
-
+            confirmedUser = userToBeConfirmed;
         }
 
     }
