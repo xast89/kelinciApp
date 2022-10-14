@@ -73,16 +73,18 @@ public class UserController {
         final OurUser userToBeConfirmed = new OurUser(confirmation.getMail(), confirmation.getMailCode(), false);
 
         for (OurUser userToBeChecked : listOfRegisteredUsers) {
-            if (Objects.equals(userToBeChecked.getMail(), userToBeConfirmed.getMail()) && Objects.equals(userToBeChecked.getMailCode(), userToBeConfirmed.getMailCode())) {
+            if (areEmailsAndMailCodesTheSame(userToBeConfirmed, userToBeChecked)) {
                 userToBeConfirmed.setConfirmed(true);
-
                 listOfConfirmedUsers.add(userToBeConfirmed);
-                //if logic could probably be also done using overridden equals method from OurUser class
             }
             System.out.println(listOfConfirmedUsers.toString());
             confirmedUser = userToBeConfirmed;
         }
 
+    }
+
+    private static boolean areEmailsAndMailCodesTheSame(OurUser userToBeConfirmed, OurUser userToBeChecked) {
+        return Objects.equals(userToBeChecked.getMail(), userToBeConfirmed.getMail()) && Objects.equals(userToBeChecked.getMailCode(), userToBeConfirmed.getMailCode());
     }
 
 
