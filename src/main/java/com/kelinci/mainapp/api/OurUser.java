@@ -49,4 +49,13 @@ public class OurUser {
     public int hashCode() {
         return Objects.hash(mail, mailCode, isConfirmed);
     }
+
+    @Override
+    public String toString() {
+        return "OurUser{" +
+                "mail='" + mail + '\'' +
+                ", mailCode='" + mailCode + '\'' +
+                ", isConfirmed=" + isConfirmed +
+                '}';
+    }
 }
