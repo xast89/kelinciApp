@@ -9,24 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
-    private OurUser registeredUser;
-    private OurUser confirmedUser;
+    private OurUser ourUser;
 
     private List<OurUser> listOfUsers = new ArrayList<>();
 
-    @GetMapping(value = "/registered/lastregistereduser")
+    @GetMapping(value = "/registered/lastuser")
     //czeka na wywolanie localhost:8080/users
     public OurUser getOurUsers() {
-        return registeredUser;
-    }
-
-    @GetMapping(value = "/registered/lastconfirmeduser")
-    //czeka na wywolanie localhost:8080/users
-    public OurUser getConfirmedUsers() {
-        return confirmedUser;
+        return ourUser;
     }
 
     @GetMapping(value = "/registered/listofusers")
@@ -37,26 +31,37 @@ public class UserController {
 
     @DeleteMapping(value = "/registered/delete")
     public void deleteOurUser() {
-        registeredUser = null;
-        confirmedUser = null;
+        ourUser = null;
         listOfUsers.clear();
     }
 
     @PostMapping(value = "/registration")
     public void register(@RequestBody RegisterRequest request) {
 
-        Integer random = (int) (1000000 * Math.random());
-        String mailCode = Integer.toString(random);
-        System.out.println(mailCode);
+        final OurUser userFromRequest = new OurUser(request.getMail());
+        //in case the list is empty - add the userFromRequest with its randomly generated mailCode
+        if (listOfUsers.isEmpty()) {
+            String mailCode = generateMailCode();
+            userFromRequest.setMailCode(mailCode);
+            ourUser = userFromRequest;
+            listOfUsers.add(userFromRequest);
+            //in case the list is not empty, stream all email addresses from listOfUsers into a new List: listOfAllEmails
+            //the list maps and collects only email addresses from listOfUsers
+            //eventually if listOfAllEmails does not contain the email from the incoming user, generate mailCode and add user
 
-        final OurUser ourUser = new OurUser(request.getMail(), mailCode, false);
+        } else {
+            List<String> listOfAllEmails = listOfUsers.stream().map(OurUser::getMail).collect(Collectors.toList());
 
-        //wysylamy tutaj maila
+            if (!(listOfAllEmails.contains(userFromRequest.getMail()))) {
 
-        registeredUser = ourUser;
-        listOfUsers.add(registeredUser);
-
+                String mailCode = generateMailCode();
+                userFromRequest.setMailCode(mailCode);
+                ourUser = userFromRequest;
+                listOfUsers.add(userFromRequest);
+            }
+        }
     }
+
 
     @PostMapping(value = "/registered/confirm")
     public void confirm(@RequestBody ConfirmationRequest confirmation) {
@@ -71,9 +76,14 @@ public class UserController {
                 //tutaj jedyne co wykombinowalem to usunac usera z listy, ustawic mu setConfirmed na true, i potem dodac ponownie do listy
                 //bo na to wygląda, że zmiana pól obiektu nie updatuje tych pól jeśli obiekt jest już w liście - dobrze wiedziec
             }
-            confirmedUser = userToBeConfirmed;
+            ourUser = userToBeConfirmed;
         }
+    }
 
+    private static String generateMailCode() {
+        Integer random = (int) (1000000 * Math.random());
+        String mailCode = Integer.toString(random);
+        return mailCode;
     }
 
     private static boolean areEmailsAndMailCodesTheSame(OurUser userToBeConfirmed, OurUser userToBeChecked) {
@@ -82,5 +92,6 @@ public class UserController {
 
 
 }
+
 
 

@@ -13,6 +13,10 @@ public class OurUser {
         this.isConfirmed = isConfirmed;
     }
 
+    public OurUser(String mail) {
+        this.mail = mail;
+    }
+
     public String getMail() {
         return mail;
     }
@@ -58,4 +62,5 @@ public class OurUser {
                 ", isConfirmed=" + isConfirmed +
                 '}';
     }
+
 }
