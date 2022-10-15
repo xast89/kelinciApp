@@ -15,47 +15,38 @@ public class UserController {
     private OurUser registeredUser;
     private OurUser confirmedUser;
 
-    private List<OurUser> listOfRegisteredUsers = new ArrayList<>();
+    private List<OurUser> listOfUsers = new ArrayList<>();
 
-    private List<OurUser> listOfConfirmedUsers = new ArrayList<>();
-
-    @GetMapping(value = "/registered/users")
+    @GetMapping(value = "/registered/lastregistereduser")
     //czeka na wywolanie localhost:8080/users
     public OurUser getOurUsers() {
         return registeredUser;
     }
 
-    @GetMapping(value = "/registered/listofusers")
-    //czeka na wywolanie localhost:8080/users
-    public String getListOfRegisteredUsers() {
-        return listOfRegisteredUsers.toString();
-    }
-
-    @GetMapping(value = "/registered/confirmedusers")
+    @GetMapping(value = "/registered/lastconfirmeduser")
     //czeka na wywolanie localhost:8080/users
     public OurUser getConfirmedUsers() {
         return confirmedUser;
     }
 
-    @GetMapping(value = "/registered/listofconfirmedusers")
+    @GetMapping(value = "/registered/listofusers")
     //czeka na wywolanie localhost:8080/users
-    public String getListOfConfirmedUsers() {
-        return listOfConfirmedUsers.toString();
+    public String getListOfRegisteredUsers() {
+        return listOfUsers.toString();
     }
 
     @DeleteMapping(value = "/registered/delete")
     public void deleteOurUser() {
         registeredUser = null;
         confirmedUser = null;
-        listOfRegisteredUsers.clear();
-        listOfConfirmedUsers.clear();
+        listOfUsers.clear();
     }
 
     @PostMapping(value = "/registration")
     public void register(@RequestBody RegisterRequest request) {
 
         Integer random = (int) (1000000 * Math.random());
-        String mailCode = random.toString();
+        String mailCode = Integer.toString(random);
         System.out.println(mailCode);
 
         final OurUser ourUser = new OurUser(request.getMail(), mailCode, false);
@@ -63,7 +54,7 @@ public class UserController {
         //wysylamy tutaj maila
 
         registeredUser = ourUser;
-        listOfRegisteredUsers.add(registeredUser);
+        listOfUsers.add(registeredUser);
 
     }
 
@@ -72,12 +63,14 @@ public class UserController {
 
         final OurUser userToBeConfirmed = new OurUser(confirmation.getMail(), confirmation.getMailCode(), false);
 
-        for (OurUser userToBeChecked : listOfRegisteredUsers) {
+        for (OurUser userToBeChecked : listOfUsers) {
             if (areEmailsAndMailCodesTheSame(userToBeConfirmed, userToBeChecked)) {
+                listOfUsers.remove(userToBeConfirmed);
                 userToBeConfirmed.setConfirmed(true);
-                listOfConfirmedUsers.add(userToBeConfirmed);
+                listOfUsers.add(userToBeConfirmed);
+                //tutaj jedyne co wykombinowalem to usunac usera z listy, ustawic mu setConfirmed na true, i potem dodac ponownie do listy
+                //bo na to wygląda, że zmiana pól obiektu nie updatuje tych pól jeśli obiekt jest już w liście - dobrze wiedziec
             }
-            System.out.println(listOfConfirmedUsers.toString());
             confirmedUser = userToBeConfirmed;
         }
 

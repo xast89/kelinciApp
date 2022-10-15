@@ -5,7 +5,7 @@ public class RegisterRequest {
     private int magicNumber;
 
 
-    public RegisterRequest(String mail, int magicNumber, String mailCode) {
+    public RegisterRequest(String mail, int magicNumber) {
         this.mail = mail;
         this.magicNumber = magicNumber;
 
