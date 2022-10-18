@@ -1,6 +1,7 @@
 package com.kelinci.mainapp.api;
 
-import com.sun.xml.bind.v2.TODO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,17 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RestController
 public class UserController {
-    private OurUser ourUser;
+
     private final List<OurUser> listOfUsers = new ArrayList<>();
 
     @GetMapping(value = "/registered/lastuser")
     //czeka na wywolanie localhost:8080/users
     public OurUser getOurUsers() {
-        return ourUser;
+        return listOfUsers.get(0);
     }
 
     @GetMapping(value = "/registered/listofusers")
@@ -31,23 +32,22 @@ public class UserController {
 
     @DeleteMapping(value = "/registered/delete")
     public void deleteOurUser() {
-        ourUser = null;
         listOfUsers.clear();
     }
 
     @PostMapping(value = "/registration")
-    public void register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Object> register(@RequestBody RegisterRequest request) {
+        String mailFromRequest = request.getMail();
+        Optional<OurUser> existingUser = listOfUsers.stream()
+                .filter(ourUser -> ourUser.getMail().equals(mailFromRequest))
+                .findFirst();
+        //Optional: może się znaleść element OurUser ale nie musi, pomaga w unikaniu null pointer exception NPE
 
-        final OurUser userFromRequest = new OurUser(request.getMail());
-        //To do: zastąpić wszystko jednym streamem z komentarza Pawła
-        if (listOfUsers.isEmpty()) {
-            generateAndSetMailCode(userFromRequest);
-        } else {
-            List<String> listOfAllEmails = listOfUsers.stream().map(OurUser::getMail).toList();
-            if (!(listOfAllEmails.contains(userFromRequest.getMail()))) {
-                generateAndSetMailCode(userFromRequest);
-            }
+        if (existingUser.isEmpty()) {
+            addRegisteredUser(mailFromRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @PostMapping(value = "/registered/confirm")
@@ -64,14 +64,13 @@ public class UserController {
         return Objects.equals(confirmation.getMail(), userToBeChecked.getMail()) && Objects.equals(confirmation.getMailCode(), userToBeChecked.getMailCode());
     }
 
-    private void generateAndSetMailCode(OurUser userFromRequest) {
-        String mailCode = generateMailCode();
-        userFromRequest.setMailCode(mailCode);
-        ourUser = userFromRequest;
-        listOfUsers.add(userFromRequest);
+    private void addRegisteredUser(String mail) {
+        OurUser ourUser = new OurUser(mail);
+        ourUser.setMailCode(generateMailCode());
+        listOfUsers.add(ourUser);
     }
 
-    private static String generateMailCode() {
+    private String generateMailCode() {
         int random = (int) (1000000 * Math.random());
         return Integer.toString(random);
     }
