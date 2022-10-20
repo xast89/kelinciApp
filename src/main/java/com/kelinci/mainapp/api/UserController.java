@@ -1,5 +1,7 @@
 package com.kelinci.mainapp.api;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,24 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 public class UserController {
-    private OurUser registeredUser;
-    private OurUser confirmedUser;
 
-    private List<OurUser> listOfUsers = new ArrayList<>();
+    private final List<OurUser> listOfUsers = new ArrayList<>();
 
-    @GetMapping(value = "/registered/lastregistereduser")
+    @GetMapping(value = "/registered/lastuser")
     //czeka na wywolanie localhost:8080/users
     public OurUser getOurUsers() {
-        return registeredUser;
-    }
-
-    @GetMapping(value = "/registered/lastconfirmeduser")
-    //czeka na wywolanie localhost:8080/users
-    public OurUser getConfirmedUsers() {
-        return confirmedUser;
+        return listOfUsers.get(0);
     }
 
     @GetMapping(value = "/registered/listofusers")
@@ -37,50 +32,50 @@ public class UserController {
 
     @DeleteMapping(value = "/registered/delete")
     public void deleteOurUser() {
-        registeredUser = null;
-        confirmedUser = null;
         listOfUsers.clear();
     }
 
     @PostMapping(value = "/registration")
-    public void register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Object> register(@RequestBody RegisterRequest request) {
+        String mailFromRequest = request.getMail();
+        Optional<OurUser> existingUser = listOfUsers.stream()
+                .filter(ourUser -> ourUser.getMail().equals(mailFromRequest))
+                .findFirst();
+        //Optional: może się znaleść element OurUser ale nie musi, pomaga w unikaniu null pointer exception NPE
 
-        Integer random = (int) (1000000 * Math.random());
-        String mailCode = Integer.toString(random);
-        System.out.println(mailCode);
-
-        final OurUser ourUser = new OurUser(request.getMail(), mailCode, false);
-
-        //wysylamy tutaj maila
-
-        registeredUser = ourUser;
-        listOfUsers.add(registeredUser);
-
+        if (existingUser.isEmpty()) {
+            addRegisteredUser(mailFromRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @PostMapping(value = "/registered/confirm")
     public void confirm(@RequestBody ConfirmationRequest confirmation) {
 
-        final OurUser userToBeConfirmed = new OurUser(confirmation.getMail(), confirmation.getMailCode(), false);
-
         for (OurUser userToBeChecked : listOfUsers) {
-            if (areEmailsAndMailCodesTheSame(userToBeConfirmed, userToBeChecked)) {
-                listOfUsers.remove(userToBeConfirmed);
-                userToBeConfirmed.setConfirmed(true);
-                listOfUsers.add(userToBeConfirmed);
-                //tutaj jedyne co wykombinowalem to usunac usera z listy, ustawic mu setConfirmed na true, i potem dodac ponownie do listy
-                //bo na to wygląda, że zmiana pól obiektu nie updatuje tych pól jeśli obiekt jest już w liście - dobrze wiedziec
+            if (areEmailsEndMailCodesTheSame(confirmation, userToBeChecked)) {
+                userToBeChecked.setConfirmed(true);
             }
-            confirmedUser = userToBeConfirmed;
         }
-
     }
 
-    private static boolean areEmailsAndMailCodesTheSame(OurUser userToBeConfirmed, OurUser userToBeChecked) {
-        return Objects.equals(userToBeChecked.getMail(), userToBeConfirmed.getMail()) && Objects.equals(userToBeChecked.getMailCode(), userToBeConfirmed.getMailCode());
+    private static boolean areEmailsEndMailCodesTheSame(ConfirmationRequest confirmation, OurUser userToBeChecked) {
+        return Objects.equals(confirmation.getMail(), userToBeChecked.getMail()) && Objects.equals(confirmation.getMailCode(), userToBeChecked.getMailCode());
     }
 
+    private void addRegisteredUser(String mail) {
+        OurUser ourUser = new OurUser(mail);
+        ourUser.setMailCode(generateMailCode());
+        listOfUsers.add(ourUser);
+    }
+
+    private String generateMailCode() {
+        int random = (int) (1000000 * Math.random());
+        return Integer.toString(random);
+    }
 
 }
+
 
 
