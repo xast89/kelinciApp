@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
 
     private final List<OurUser> listOfUsers = new ArrayList<>();
+    private final List<RegisteredUserResponse> registeredUserResponses = new ArrayList<>();
+
 
     @GetMapping(value = "/registered/lastuser")
     //czeka na wywolanie localhost:8080/users
@@ -26,8 +29,13 @@ public class UserController {
 
     @GetMapping(value = "/registered/listofusers")
     //czeka na wywolanie localhost:8080/users
-    public String getListOfRegisteredUsers() {
-        return listOfUsers.toString();
+    public List<RegisteredUserResponse> getRegisteredUserResponse() {
+
+        //mapujemy tutaj ourUser na ResitsterUR - chodzi o to żeby ujawnić tylko to co ma być zdefiniowane w RUR
+
+        return listOfUsers.stream()
+                .map(ourUser -> new RegisteredUserResponse(ourUser.getMail()))
+                .collect(Collectors.toList());
     }
 
     @DeleteMapping(value = "/registered/delete")
