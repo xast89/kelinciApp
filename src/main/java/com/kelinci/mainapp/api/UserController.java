@@ -30,7 +30,18 @@ public class UserController {
     public List<RegisteredUserResponse> getRegisteredUserResponse() {
         //mapujemy tutaj ourUser na ResitsterUR - chodzi o to żeby ujawnić tylko to co ma być zdefiniowane w RUR
         return listOfUsers.stream()
-                .map(ourUser -> new RegisteredUserResponse(ourUser.getMail())).collect(Collectors.toList());
+                .map(this::toRegisteredUserResponse)
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+
+    //ta metode wrzucic do mappera - ktory bedzie mial tylko ta metode publiczna
+    private RegisteredUserResponse toRegisteredUserResponse(OurUser ourUser) {
+        return new RegisteredUserResponse(ourUser.getMail());
     }
 
     @DeleteMapping(value = "/registered/delete")
