@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -26,8 +27,21 @@ public class UserController {
 
     @GetMapping(value = "/registered/listofusers")
     //czeka na wywolanie localhost:8080/users
-    public String getListOfRegisteredUsers() {
-        return listOfUsers.toString();
+    public List<RegisteredUserResponse> getRegisteredUserResponse() {
+        //mapujemy tutaj ourUser na ResitsterUR - chodzi o to żeby ujawnić tylko to co ma być zdefiniowane w RUR
+        return listOfUsers.stream()
+                .map(this::toRegisteredUserResponse)
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+
+    //ta metode wrzucic do mappera - ktory bedzie mial tylko ta metode publiczna
+    private RegisteredUserResponse toRegisteredUserResponse(OurUser ourUser) {
+        return new RegisteredUserResponse(ourUser.getMail());
     }
 
     @DeleteMapping(value = "/registered/delete")
