@@ -14,10 +14,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.kelinci.mainapp.api.ListOfUsers.listOfUsers;
+
 @RestController
 public class UserController {
-
-    private final List<OurUser> listOfUsers = new ArrayList<>();
 
     @GetMapping(value = "/registered/lastuser")
     //czeka na wywolanie localhost:8080/users
@@ -33,11 +33,6 @@ public class UserController {
                 .map(this::toRegisteredUserResponse)
                 .collect(Collectors.toList());
     }
-
-
-
-
-
 
     //ta metode wrzucic do mappera - ktory bedzie mial tylko ta metode publiczna
     private RegisteredUserResponse toRegisteredUserResponse(OurUser ourUser) {
