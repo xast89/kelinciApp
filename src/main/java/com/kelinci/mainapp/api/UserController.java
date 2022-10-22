@@ -8,28 +8,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.kelinci.mainapp.api.ListOfUsers.listOfUsers;
-
 @RestController
 public class UserController {
+
+    private final SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
 
     @GetMapping(value = "/registered/lastuser")
     //czeka na wywolanie localhost:8080/users
     public OurUser getOurUsers() {
-        return listOfUsers.get(0);
+        return userDatabaseController.getUserDatabase().get(0);
     }
 
     @GetMapping(value = "/registered/listofusers")
     //czeka na wywolanie localhost:8080/users
     public List<RegisteredUserResponse> getRegisteredUserResponse() {
         //mapujemy tutaj ourUser na ResitsterUR - chodzi o to żeby ujawnić tylko to co ma być zdefiniowane w RUR
-        return listOfUsers.stream()
+        return userDatabaseController.getUserDatabase().stream()
                 .map(this::toRegisteredUserResponse)
                 .collect(Collectors.toList());
     }
@@ -41,18 +40,14 @@ public class UserController {
 
     @DeleteMapping(value = "/registered/delete")
     public void deleteOurUser() {
-        listOfUsers.clear();
+        userDatabaseController.clearUserDatabase();
     }
 
     @PostMapping(value = "/registration")
     public ResponseEntity<Object> register(@RequestBody RegisterRequest request) {
         String mailFromRequest = request.getMail();
-        Optional<OurUser> existingUser = listOfUsers.stream()
-                .filter(ourUser -> ourUser.getMail().equals(mailFromRequest))
-                .findFirst();
-        //Optional: może się znaleść element OurUser ale nie musi, pomaga w unikaniu null pointer exception NPE
 
-        if (existingUser.isEmpty()) {
+        if (userDatabaseController.getUserWithMail(mailFromRequest).isEmpty()) {
             addRegisteredUser(mailFromRequest);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
@@ -62,7 +57,7 @@ public class UserController {
     @PostMapping(value = "/registered/confirm")
     public void confirm(@RequestBody ConfirmationRequest confirmation) {
 
-        for (OurUser userToBeChecked : listOfUsers) {
+        for (OurUser userToBeChecked : userDatabaseController.getUserDatabase()) {
             if (areEmailsEndMailCodesTheSame(confirmation, userToBeChecked)) {
                 userToBeChecked.setConfirmed(true);
             }
@@ -76,7 +71,7 @@ public class UserController {
     private void addRegisteredUser(String mail) {
         OurUser ourUser = new OurUser(mail);
         ourUser.setMailCode(generateMailCode());
-        listOfUsers.add(ourUser);
+        userDatabaseController.addUserToDatabase(ourUser);
     }
 
     private String generateMailCode() {
