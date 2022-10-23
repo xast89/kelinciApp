@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -23,8 +22,8 @@ public class UserController {
 
     @GetMapping(value = "/registered/listofusers")
     public List<RegisteredUserResponse> getRegisteredUserResponse() {
-        Mapper mapper = new Mapper();
-        return mapper.getRegisteredUsersEmails();
+        RegisteredUserMapper mapper = new RegisteredUserMapper();
+        return mapper.getListOfRegisteredUsersEmails();
     }
 
     @DeleteMapping(value = "/registered/delete")
@@ -45,9 +44,10 @@ public class UserController {
 
     @PostMapping(value = "/registered/confirm")
     public void confirm(@RequestBody ConfirmationRequest confirmation) {
-
+        FirstUtilClass emailAndEmailCodeComparator = new FirstUtilClass();
         for (OurUser userToBeChecked : SimpleUserDatabase.getUserDatabase()) {
-            if (SimpleUserDatabase.areEmailsEndMailCodesTheSame(confirmation, userToBeChecked)) {
+
+            if (emailAndEmailCodeComparator.areEmailsEndMailCodesTheSame(confirmation, userToBeChecked)) {
                 userToBeChecked.setConfirmed(true);
             }
         }

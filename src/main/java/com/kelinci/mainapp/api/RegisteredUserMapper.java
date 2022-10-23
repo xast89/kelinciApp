@@ -1,16 +1,15 @@
 package com.kelinci.mainapp.api;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.kelinci.mainapp.api.SimpleUserDatabase.getUserDatabase;
 
-public class Mapper {
-    public Mapper() {
+public class RegisteredUserMapper {
+    public RegisteredUserMapper() {
     }
 
-    public List<RegisteredUserResponse> getRegisteredUsersEmails() {
+    public List<RegisteredUserResponse> getListOfRegisteredUsersEmails() {
         return getUserDatabase().stream()
                 .map(this::toRegisteredUserResponse)
                 .collect(Collectors.toList());
