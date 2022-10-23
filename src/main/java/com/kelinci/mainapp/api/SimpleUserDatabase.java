@@ -2,18 +2,18 @@ package com.kelinci.mainapp.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class SimpleUserDatabase {
 
+
     private static final List<OurUser> userDatabase = new ArrayList<>();
 
-    public static List<OurUser> getUserDatabase() {
+    public List<OurUser> getUserDatabase() {
         return userDatabase;
     }
 
-    public static void addUserToDatabase(OurUser ourUser) {
+    public void addUserToDatabase(OurUser ourUser) {
         userDatabase.add(ourUser);
     }
 
@@ -30,8 +30,9 @@ public class SimpleUserDatabase {
     public void addRegisteredUser(String mail) {
         OurUser ourUser = new OurUser(mail);
         FirstUtilClass mailGenerator = new FirstUtilClass();
+        SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
         ourUser.setMailCode(mailGenerator.generateMailCode());
-        SimpleUserDatabase.addUserToDatabase(ourUser);
+        userDatabaseController.addUserToDatabase(ourUser);
     }
 
 }

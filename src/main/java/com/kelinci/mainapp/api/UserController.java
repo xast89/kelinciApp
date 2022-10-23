@@ -17,8 +17,10 @@ public class UserController {
 
     @GetMapping(value = "/registered/lastuser")
     public OurUser getOurUsers() {
-        return SimpleUserDatabase.getUserDatabase().get(0);
+        return userDatabaseController.getUserDatabase().get(0);
+
     }
+    //here get rid of the static getUserDatabase
 
     @GetMapping(value = "/registered/listofusers")
     public List<RegisteredUserResponse> getRegisteredUserResponse() {
@@ -45,7 +47,7 @@ public class UserController {
     @PostMapping(value = "/registered/confirm")
     public void confirm(@RequestBody ConfirmationRequest confirmation) {
         FirstUtilClass emailAndEmailCodeComparator = new FirstUtilClass();
-        for (OurUser userToBeChecked : SimpleUserDatabase.getUserDatabase()) {
+        for (OurUser userToBeChecked : userDatabaseController.getUserDatabase()) {
 
             if (emailAndEmailCodeComparator.areEmailsEndMailCodesTheSame(confirmation, userToBeChecked)) {
                 userToBeChecked.setConfirmed(true);
