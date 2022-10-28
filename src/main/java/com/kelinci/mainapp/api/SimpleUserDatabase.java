@@ -6,7 +6,6 @@ import java.util.Optional;
 
 public class SimpleUserDatabase {
 
-
     private static final List<OurUser> userDatabase = new ArrayList<>();
 
     public List<OurUser> getUserDatabase() {

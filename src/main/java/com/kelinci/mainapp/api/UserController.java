@@ -14,18 +14,17 @@ import java.util.List;
 public class UserController {
 
     private final SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
+    private final RegisteredUserMapper mapper = new RegisteredUserMapper();
 
     @GetMapping(value = "/registered/lastuser")
     public OurUser getOurUsers() {
         return userDatabaseController.getUserDatabase().get(0);
 
     }
-    //here get rid of the static getUserDatabase
 
     @GetMapping(value = "/registered/listofusers")
     public List<RegisteredUserResponse> getRegisteredUserResponse() {
-        RegisteredUserMapper mapper = new RegisteredUserMapper();
-        return mapper.getListOfRegisteredUsersEmails();
+        return mapper.mapToRegisteredUserResponses(userDatabaseController.getUserDatabase());
     }
 
     @DeleteMapping(value = "/registered/delete")
