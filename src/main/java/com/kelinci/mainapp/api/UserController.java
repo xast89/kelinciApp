@@ -15,6 +15,7 @@ public class UserController {
 
     private final SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
     private final RegisteredUserMapper mapper = new RegisteredUserMapper();
+    private final DatabaseService databaseService = new DatabaseService();
 
     @GetMapping(value = "/registered/lastuser")
     public OurUser getOurUsers() {
@@ -30,13 +31,14 @@ public class UserController {
     @DeleteMapping(value = "/registered/delete")
     public void deleteOurUser() {
         userDatabaseController.clearUserDatabase();
+        //Resp Voida jako void, dodac return na kazdym etapie, 200 Created, albo, CONFLICT , ifami statusy rozne powkladac,
     }
 
     @PostMapping(value = "/registration")
     public ResponseEntity<Object> register(@RequestBody RegisterRequest request) {
         String mailFromRequest = request.getMail();
 
-        if (userDatabaseController.getUserWithMail(mailFromRequest).isEmpty()) {
+        if (databaseService.getUserWithMail(mailFromRequest).isEmpty()) {
             userDatabaseController.addRegisteredUser(mailFromRequest);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
