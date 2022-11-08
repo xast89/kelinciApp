@@ -12,6 +12,8 @@ import java.util.List;
 
 @RestController
 public class UserController {
+    public UserController() {
+    }
 
     private final SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
     private final RegisteredUserMapper mapper = new RegisteredUserMapper();

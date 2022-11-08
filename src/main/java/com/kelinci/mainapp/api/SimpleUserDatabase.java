@@ -8,7 +8,10 @@ public class SimpleUserDatabase {
 
     private static final List<OurUser> userDatabase = new ArrayList<>();
     private final FirstUtilClass mailGenerator = new FirstUtilClass();
-    private final SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
+
+
+    public SimpleUserDatabase() {
+    }
 
     public List<OurUser> getUserDatabase() {
         return userDatabase;
@@ -23,6 +26,7 @@ public class SimpleUserDatabase {
     }
 
     public void addRegisteredUser(String mail) {
+        SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
         OurUser ourUser = new OurUser(mail);
         ourUser.setMailCode(mailGenerator.generateMailCode());
         userDatabaseController.addUserToDatabase(ourUser);
