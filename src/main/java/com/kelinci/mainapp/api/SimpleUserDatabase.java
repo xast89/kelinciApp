@@ -26,10 +26,9 @@ public class SimpleUserDatabase {
     }
 
     public void addRegisteredUser(String mail) {
-        SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
         OurUser ourUser = new OurUser(mail);
         ourUser.setMailCode(mailGenerator.generateMailCode());
-        userDatabaseController.addUserToDatabase(ourUser);
+        addUserToDatabase(ourUser);
     }
 
 }
