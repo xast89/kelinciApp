@@ -21,11 +21,10 @@ public class UserController {
 
     @GetMapping(value = "/registered/lastuser")
     public OurUser getOurUsers() {
-        return userDatabaseController.getUserDatabase().get(0);
-
+        return userDatabaseController.getUserDatabase().get(getRegisteredUserResponse().size()-1);
     }
     //getOurUsers powinna miec utworzony obiekt z klasy UserController ale tego nie potrzeba bo to robi Spring w tle
-
+    //dać size minus 1, pobawić sie w Evaluate expression
     @GetMapping(value = "/registered/listofusers")
     public List<RegisteredUserResponse> getRegisteredUserResponse() {
         return mapper.mapToRegisteredUserResponses(userDatabaseController.getUserDatabase());
@@ -48,14 +47,16 @@ public class UserController {
     }
 
     @PostMapping(value = "/registered/confirm")
-    public void confirm(@RequestBody ConfirmationRequest confirmation) {
+    public ResponseEntity<Object> confirm(@RequestBody ConfirmationRequest confirmation) {
         FirstUtilClass emailAndEmailCodeComparator = new FirstUtilClass();
         for (OurUser userToBeChecked : userDatabaseController.getUserDatabase()) {
 
             if (emailAndEmailCodeComparator.areEmailsEndMailCodesTheSame(confirmation, userToBeChecked)) {
                 userToBeChecked.setConfirmed(true);
+                return ResponseEntity.status(HttpStatus.ACCEPTED).build();
             }
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
 
