@@ -16,13 +16,14 @@ public class UserController {
     @Autowired
     private SimpleUserDatabase userDatabaseController;
     @Autowired
-    private  RegisteredUserMapper mapper;
+    private RegisteredUserMapper mapper;
     //@Autowired tutaj sygnalizuje ze Spring przejmuje ten komponent
 
     @GetMapping(value = "/registered/lastuser")
     public OurUser getOurUsers() {
-        return userDatabaseController.getUserDatabase().get(getRegisteredUserResponse().size()-1);
+        return userDatabaseController.getUserDatabase().get(getRegisteredUserResponse().size() - 1);
     }
+
     //getOurUsers powinna miec utworzony obiekt z klasy UserController ale tego nie potrzeba bo to robi Spring w tle
     //dać size minus 1, pobawić sie w Evaluate expression
     @GetMapping(value = "/registered/listofusers")
