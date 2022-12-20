@@ -1,5 +1,6 @@
 package com.kelinci.mainapp.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,15 +13,18 @@ import java.util.List;
 
 @RestController
 public class UserController {
-
-    private final SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
-    private final RegisteredUserMapper mapper = new RegisteredUserMapper();
+    @Autowired
+    private SimpleUserDatabase userDatabaseController;
+    @Autowired
+    private  RegisteredUserMapper mapper;
+    //@Autowired tutaj sygnalizuje ze Spring przejmuje ten komponent
 
     @GetMapping(value = "/registered/lastuser")
     public OurUser getOurUsers() {
         return userDatabaseController.getUserDatabase().get(0);
 
     }
+    //getOurUsers powinna miec utworzony obiekt z klasy UserController ale tego nie potrzeba bo to robi Spring w tle
 
     @GetMapping(value = "/registered/listofusers")
     public List<RegisteredUserResponse> getRegisteredUserResponse() {
