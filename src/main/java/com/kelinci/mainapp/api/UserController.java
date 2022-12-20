@@ -1,5 +1,6 @@
 package com.kelinci.mainapp.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,16 +13,19 @@ import java.util.List;
 
 @RestController
 public class UserController {
-
-    private final SimpleUserDatabase userDatabaseController = new SimpleUserDatabase();
-    private final RegisteredUserMapper mapper = new RegisteredUserMapper();
+    @Autowired
+    private SimpleUserDatabase userDatabaseController;
+    @Autowired
+    private RegisteredUserMapper mapper;
+    //@Autowired tutaj sygnalizuje ze Spring przejmuje ten komponent
 
     @GetMapping(value = "/registered/lastuser")
     public OurUser getOurUsers() {
-        return userDatabaseController.getUserDatabase().get(0);
-
+        return userDatabaseController.getUserDatabase().get(getRegisteredUserResponse().size() - 1);
     }
 
+    //getOurUsers powinna miec utworzony obiekt z klasy UserController ale tego nie potrzeba bo to robi Spring w tle
+    //dać size minus 1, pobawić sie w Evaluate expression
     @GetMapping(value = "/registered/listofusers")
     public List<RegisteredUserResponse> getRegisteredUserResponse() {
         return mapper.mapToRegisteredUserResponses(userDatabaseController.getUserDatabase());
@@ -44,14 +48,16 @@ public class UserController {
     }
 
     @PostMapping(value = "/registered/confirm")
-    public void confirm(@RequestBody ConfirmationRequest confirmation) {
+    public ResponseEntity<Object> confirm(@RequestBody ConfirmationRequest confirmation) {
         FirstUtilClass emailAndEmailCodeComparator = new FirstUtilClass();
         for (OurUser userToBeChecked : userDatabaseController.getUserDatabase()) {
 
             if (emailAndEmailCodeComparator.areEmailsEndMailCodesTheSame(confirmation, userToBeChecked)) {
                 userToBeChecked.setConfirmed(true);
+                return ResponseEntity.status(HttpStatus.ACCEPTED).build();
             }
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
 
