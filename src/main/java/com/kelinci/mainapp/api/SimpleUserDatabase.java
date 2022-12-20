@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-
 public class SimpleUserDatabase {
 
     private static final List<OurUser> userDatabase = new ArrayList<>();
