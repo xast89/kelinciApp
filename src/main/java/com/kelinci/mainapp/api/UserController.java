@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 public class UserController {
     @Autowired
-    private SimpleUserDatabase userDatabaseController;
+    private UserDatabaseInterface userDatabaseController;
     @Autowired
     private RegisteredUserMapper mapper;
     //@Autowired tutaj sygnalizuje ze Spring przejmuje ten komponent

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class SimpleUserDatabase {
+public class SimpleUserDatabase implements UserDatabaseInterface {
 
     private static final List<OurUser> userDatabase = new ArrayList<>();
 
