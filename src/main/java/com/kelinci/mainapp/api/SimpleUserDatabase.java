@@ -1,5 +1,6 @@
 package com.kelinci.mainapp.api;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Primary
 public class SimpleUserDatabase implements UserDatabaseInterface {
 
     private static final List<OurUser> userDatabase = new ArrayList<>();
